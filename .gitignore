@@ -1,0 +1,7 @@
+dist
+.DS_Store
+*.egg-info
+SubErate/__pycache__
+SubErate/models
+..gitignore.kate-swp
+
