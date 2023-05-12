@@ -1,0 +1,14 @@
+all:
+  children:
+    gcp:
+      hosts:
+        my-vm:
+          ansible_host: <VM External IP Address>
+          ansible_user: <VM Username>
+          ansible_ssh_private_key_file: /path/to/ssh/key
+          ansible_python_interpreter: /usr/bin/python3
+  vars:
+    zone: us-central1-a
+    project_id: suberate
+    service_account_email: yashwanth.gate2022@gmail.com
+    credentials_file: /path/to/gcp/credentials/file

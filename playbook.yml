@@ -1,0 +1,33 @@
+---
+- name: Build Docker image in GCE instance
+  hosts: all
+  gather_facts: no
+  vars:
+    image_name: 'SubErate'
+    zone: 'us-central1-a'  # Set the GCE zone where the instance should be created
+    service_account_email: 'yashwanth.gate2022@gmail.com'  # Set the email address of the GCP service account to use
+    credentials_file: '/path/to/my/credentials.json'  # Set the path to the GCP service account credentials file
+    project_id: 'suberate'  # Set the ID of the GCP project in which to create the GCE instance
+  tasks:
+    - name: Create GCE instance
+      gce:
+        instance_names: ['my-vm']
+        zone: '{{ zone }}'
+        machine_type: 'n1-standard-1'
+        image: 'ubuntu-1804-bionic-v20220503'
+        service_account_email: '{{ service_account_email }}'
+        credentials_file: '{{ credentials_file }}'
+        project_id: '{{ project_id }}'
+        metadata: '{"startup-script":"#!/bin/bash\napt-get update\napt-get install -y docker.io\n"}'
+        state: present
+      register: instance_info
+    - name: Wait for SSH to become available
+      wait_for:
+        host: '{{ instance_info.instance_data[0].networkInterfaces[0].accessConfigs[0].natIP }}'
+        port: 22
+        timeout: 300
+    - name: Build Docker image
+      docker_image:
+        path: '{{ playbook_dir }}'
+        name: '{{ image_name }}'
+        state: present
