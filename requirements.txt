@@ -1,3 +1,5 @@
+huggingfface-hub
+transformers
 openai-whisper
 streamlit
 argparse
